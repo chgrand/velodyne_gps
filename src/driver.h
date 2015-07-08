@@ -50,7 +50,7 @@ public:
 
   bool connect();
   bool isConnected() {return connected_;}
-  void readFrame();
+  bool readFrame();
   double getTime();
   string getNmea();
   void getImu(double gyro[], double accel[]);

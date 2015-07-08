@@ -103,16 +103,19 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(velodyne_gps_node src/velodyne_gps_node.cpp)
+add_executable(driver_node 
+  src/node.cpp
+  src/driver.cpp
+  )
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(velodyne_gps_node velodyne_gps_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(velodyne_gps_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(driver_node
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
