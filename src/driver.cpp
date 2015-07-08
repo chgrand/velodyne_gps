@@ -75,8 +75,10 @@ double VelodyneGPS::getTime()
 string VelodyneGPS::getNmea()
 {
   string nmea_str(packet_.NMEA_sentence);
-  nmea_str.erase(std::remove(str.begin(), str.end(), '\r'), str.end());
-  nmea_str.erase(std::remove(str.begin(), str.end(), '\n'), str.end());
+  nmea_str.erase(std::remove(nmea_str.begin(), nmea_str.end(), '\r'), 
+		 nmea_str.end());
+  nmea_str.erase(std::remove(nmea_str.begin(), nmea_str.end(), '\n'), 
+		 nmea_str.end());
   return nmea_str;
 }
 
