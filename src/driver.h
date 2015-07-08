@@ -64,6 +64,7 @@ public:
   void getImu(double gyro[], double accel[]);
 
 private:
+  int convert(uint16_t data);
   GPS_packet_t packet_;
   int port_;
   int socket_;

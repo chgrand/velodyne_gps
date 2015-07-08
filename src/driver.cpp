@@ -33,7 +33,7 @@ bool VelodyneGPS::readFrame()
   int n = recvfrom(socket_, (void *)&packet_, sizeof(packet_), 0, 
 		   (struct sockaddr *) &other, &len);
 
-  if(n!=10) return false;
+  if(n!=512) return false;
 
   printf("Received from %s:%d: ", 
 	   inet_ntoa(other.sin_addr), ntohs(other.sin_port)); 
@@ -48,6 +48,7 @@ VelodyneGPS::~VelodyneGPS()
 }
 
 //------------------------------------------------------------------------------
+// return top hour GPS time in s 
 double VelodyneGPS::getTime()
 {
   return packet_.GPS_timestamp*1e-6;
@@ -57,4 +58,29 @@ double VelodyneGPS::getTime()
 string VelodyneGPS::getNmea()
 {
   return string(packet_.NMEA_sentence);
+}
+
+//------------------------------------------------------------------------------
+inline int VelodyneGPS::convert(uint16_t data)
+{
+  int value = (data & 0x0fff);
+  if(value&0x0800) value&=0xFFFFF000;  
+  return value;
+}
+
+//------------------------------------------------------------------------------
+void VelodyneGPS::getImu(double gyro[], double accel[])
+{
+#define GYRO_SCALE (0.09766*2.14926/180.) // rad/s
+#define ACCEL_SCALE (0.001221*9.81)  //m/s2
+
+
+  gyro[0] = -(double)convert(packet_.gyro_1) * GYRO_SCALE; // X
+  gyro[1] = +(double)convert(packet_.gyro_2) * GYRO_SCALE; // Y
+  gyro[2] = +(double)convert(packet_.gyro_3) * GYRO_SCALE; // Z
+
+  accel[0] = (double)(convert(packet_.accel_3_x)-convert(packet_.accel_1_y)) * ACCEL_SCALE/2; 
+  accel[1] = (double)(convert(packet_.accel_2_y)+convert(packet_.accel_3_y)) * ACCEL_SCALE/2; 
+  accel[2] = (double)(convert(packet_.accel_1_x)+convert(packet_.accel_2_x)) * ACCEL_SCALE/2; 
+
 }
