@@ -64,7 +64,7 @@ string VelodyneGPS::getNmea()
 inline int VelodyneGPS::convert(uint16_t data)
 {
   int value = (data & 0x0fff);
-  if(value&0x0800) value&=0xFFFFF000;  
+  if(value&0x0800) value|=0xFFFFF000;  
   return value;
 }
 

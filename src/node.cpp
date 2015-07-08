@@ -34,19 +34,24 @@ int main(int argc, char **argv)
     if(gps_driver.readFrame()) {
 
       ros::Time now = ros::Time::now();
-
-      ROS_INFO("GPS time = %.3f ", gps_driver.getTime());
-      ROS_INFO("NMEA = %s\n", gps_driver.getNmea().c_str());
+      int now_secs = now.toSec();
+      int from_hour = now_secs - (now_secs%3600);
+      double gps_timestamp = gps_driver.getTime()+(double)from_hour;
       gps_driver.getImu(gyro, accel);
+
+      // LOG data
+      ROS_INFO("Sys time = %.3f", now.toSec());
+      ROS_INFO("GPS time = %.3f ", gps_timestamp);
+      ROS_INFO("NMEA = %s\n", gps_driver.getNmea().c_str());
       ROS_INFO("Gyro = <%.3f, %.3f, %.3f>",  gyro[0], gyro[1], gyro[2]);
       ROS_INFO("Accel = <%.3f, %.3f, %.3f>", accel[0], accel[1], accel[2]);
 
       string_msg.data = gps_driver.getNmea();
-      nmea_pub.publish(string_msg);
-      
+      nmea_pub.publish(string_msg);      
+ 
       time_msg.header.stamp = now;
       time_msg.source = "velodyne_gps";
-      time_msg.time_ref = ros::Time(gps_driver.getTime());
+      time_msg.time_ref = ros::Time(gps_timestamp);
       time_pub.publish(time_msg);
       
       imu_msg.header.stamp = now;
