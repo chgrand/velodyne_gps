@@ -1,8 +1,12 @@
-// -*- c++-mode -*-
+//-*- c++-mode -*-
 
+#ifndef DRIVER_H
+#define DRIVER_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
 #include <cstring>
-#include <cstdio>
-#include <cstdlib>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/types.h>
@@ -45,7 +49,11 @@ using namespace std;
 class VelodyneGPS
 {
 public:
-  VelodyneGPS(int port) : port_(port), connected_(false) {};
+  VelodyneGPS(int port=8308) : 
+    port_(port), 
+    connected_(false),
+    socket_(-1)
+  {};
   ~VelodyneGPS();
 
   bool connect();
@@ -58,5 +66,8 @@ public:
 private:
   GPS_packet_t packet_;
   int port_;
+  int socket_;
   bool connected_;
-}
+};
+
+#endif

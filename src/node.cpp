@@ -9,7 +9,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "VelodyneGPS_driver");
   ros::NodeHandle nh_;
 
-  VelodyneGPS gps_driver(1010);
+  VelodyneGPS gps_driver(8308);
 
   if(!gps_driver.connect()) {
     ROS_ERROR("Could not connect to Velodyne at port XXXX");
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 
   while (ros::ok()) {
     if(gps_driver.readFrame()) {
-      ROS_INFO("GPS time = %.3f ", gps_driver.getTIme());
+      ROS_INFO("GPS time = %.3f ", gps_driver.getTime());
       ROS_INFO("NMEA = %s\n", gps_driver.getNmea().c_str());
     }    
     ros::spinOnce();
